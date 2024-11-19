@@ -49,50 +49,50 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuoteApp() {
-        var quotes by remember { mutableStateOf<List<Quote>>(emptyList()) }
-        var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
-        val quoteService = QuoteService.create()
-        val coroutineScope = rememberCoroutineScope()
+    var quotes by remember { mutableStateOf<List<Quote>>(emptyList()) }
+    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
+    val quoteService = QuoteService.create()
+    val coroutineScope = rememberCoroutineScope()
 
 
     Scaffold() { padding ->
 
-            Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-                Button(onClick = {
-                    coroutineScope.launch {
-                        quotes = quoteService.getQuotes().quotes
-                    }
-                }) {
-                    Text("Display All Quotes")
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Button(onClick = {
+                coroutineScope.launch {
+                    quotes = quoteService.getQuotes().quotes
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { searchQuery = TextFieldValue("") }) {
-                    Text("Search Authors")
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                BasicTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
-                    decorationBox = { innerTextField ->
-                        Box(Modifier.padding(8.dp)) {
-                            if (searchQuery.text.isEmpty()) {
-                                Text("Search 'your'")
-                            }
-                            innerTextField()
+            }) {
+                Text("Display All Quotes")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { searchQuery = TextFieldValue("") }) {
+                Text("Search Authors")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            BasicTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                decorationBox = { innerTextField ->
+                    Box(Modifier.padding(8.dp)) {
+                        if (searchQuery.text.isEmpty()) {
+                            Text("Search 'your'")
                         }
+                        innerTextField()
                     }
-                )
-                LazyColumn {
-                    items(quotes.filter {
-                        it.quote.contains(searchQuery.text, ignoreCase = true) ||
-                                it.author.contains(searchQuery.text, ignoreCase = true)
-                    }) { quote ->
-                        Text("${quote.quote} - ${quote.author}", modifier = Modifier.padding(8.dp))
-                    }
+                }
+            )
+            LazyColumn {
+                items(quotes.filter {
+                    it.quote.contains(searchQuery.text, ignoreCase = true) ||
+                            it.author.contains(searchQuery.text, ignoreCase = true)
+                }) { quote ->
+                    Text("${quote.quote} - ${quote.author}", modifier = Modifier.padding(8.dp))
                 }
             }
         }
     }
+}
 
 
